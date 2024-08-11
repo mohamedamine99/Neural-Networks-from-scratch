@@ -1,4 +1,5 @@
-
+from typing import List
+import numpy as np
 
 
 class BaseModel:
@@ -21,4 +22,15 @@ class BaseModel:
 
 
 class Sequential(BaseModel):
-    pass
+    def __init__(self, layers):
+        super().__init__()
+        self.layers = layers
+
+
+    def forward(self, input:np.ndarray):
+        for layer in self.layers:
+            input = layer.forward(input)
+
+    def backward(self, output_grad:np.ndarray):
+        for layer in self.layers.reverse():
+            output_grad = layer.forward(output_grad)

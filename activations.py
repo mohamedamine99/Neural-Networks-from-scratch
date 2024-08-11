@@ -1,48 +1,48 @@
-
-# TODO: add attributes initialisation to avoid errors
-
 import numpy as np
 
-from activations_functional import (relu, relu_backward,
-                                    tanh, tanh_backward,
-                                    sigmoid, sigmoid_backward,
-
+from layers import BaseLayer
+from activations_functional import (relu, relu_prime,
+                                    tanh, tanh_prime,
+                                    sigmoid, sigmoid_prime,
+                                    softmax, softmax_prime
                                     )
 
-from layers import BaseLayer
 
-class Relu(BaseLayer):
+class BaseActivation(BaseLayer):
+    def __init__(self, activation, activation_prime):
+        self.activation = activation
+        self.activation_prime = activation_prime
 
-    def forward(self, X:np.ndarray) -> np.ndarray:
-        self.Y = relu(X)
-        return self.Y
-
-    def backward(self, output_grad:np.ndarray) -> np.ndarray:
-        self.input_grad = relu_backward(output_grad)
-        return self.input_grad
-
-
-class Tanh(BaseLayer):
-
-    def forward(self, X: np.ndarray) -> np.ndarray:
-        self.Y = tanh(X)
-        return self.Y
-
-    def backward(self, output_grad: np.ndarray) -> np.ndarray:
-        self.input_grad = tanh_backward(output_grad)
-        return self.input_grad
+    def forward(self, input:np.ndarray):
+        self.input = np.copy(input)
+        self.output = self.activation(self.input)
+        return np.copy(self.output)
 
 
-class Sigmoid(BaseLayer):
 
-    def forward(self, X: np.ndarray) -> np.ndarray:
-        self.Y = sigmoid(X)
-        return self.Y
-
-    def backward(self, output_grad: np.ndarray) -> np.ndarray:
-        self.input_grad = sigmoid_backward(output_grad)
-        return self.input_grad
+    def backward(self, output_grad):
+        self.output_grad = np.copy(output_grad)
+        self.input_grad = np.multiply(output_grad, self.activation_prime(self.input))
+        return np.copy(self.input_grad)
 
 
+class ReLU(BaseActivation):
+    def __init__(self):
+        super().__init__(relu, relu_prime)
+
+
+class Tanh(BaseActivation):
+    def __init__(self):
+        super().__init__(tanh, tanh_prime)
+
+
+class Sigmoid(BaseActivation):
+    def __init__(self):
+        super().__init__(sigmoid, sigmoid_prime)
+
+
+class Softmax(BaseActivation):
+    def __init__(self):
+        super().__init__(softmax, softmax_prime)
 
 

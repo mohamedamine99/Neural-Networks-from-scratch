@@ -27,9 +27,6 @@ def tanh_prime(x):
     return 1 - np.pow(tanh(x), 2)
 
 
-# def softmax(x):
-#     return np.exp(x)/ np.sum(np.exp(x), axis=0)
-
 def softmax(x):
     # the max term is computer for added numerical stability
     exp_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
