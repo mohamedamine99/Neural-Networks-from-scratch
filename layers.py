@@ -33,15 +33,28 @@ class Linear(BaseLayer):
         self.b_grad = None
 
     def forward(self, input:np.ndarray):
+        # print('----- FORWARD -----')
         self.input = np.copy(input)
-        self.output = np.matmul(self.W, self.input) + self.B
+        # print(f'{self.input.shape=}')
+        # print(f'{self.W.shape=}')
+        self.output = np.dot(self.W, self.input) + self.B
+        # print(f'{self.output.shape=}')
+        # print('---------------------')
         return np.copy(self.output)
 
     def backward(self, output_grad: np.ndarray, learning_rate):
-        self.input_grad = np.matmul(self.W.T, output_grad)
-        self.w_grad = np.matmul(output_grad, self.input)
+        # print('------ BACKWARD ------')
+        # print(f'{output_grad.shape=}')
+        # print(f'{self.W.T.shape=}')
+        # print(f'{self.input.T.shape=}')
+        self.input_grad = np.dot(self.W.T, output_grad)
+        self.w_grad = np.dot(output_grad, self.input.T)
         if self.add_bias:
             self.b_grad = output_grad.copy()
+
+        # print(f'{self.w_grad.shape=}')
+        # print(f'{self.b_grad.shape=}')
+        # print('-----------------------')
 
         self.update_params(learning_rate)
         return np.copy(self.input_grad)

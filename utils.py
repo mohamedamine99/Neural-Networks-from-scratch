@@ -1,17 +1,37 @@
 import numpy as np
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 
 import numpy as np
 import matplotlib.pyplot as plt
 
-from activations_functional import (relu, relu_prime,
-                                    sigmoid, sigmoid_prime,
-                                    tanh, tanh_prime,
-                                    softmax, softmax_prime
-                                      )
 
-import numpy as np
-import matplotlib.pyplot as plt
+def generate_linear_points_with_noise(x_range, slope, intercept, num_points, noise_std_dev):
+    """
+    Generates a set of points representing a linear function with random noise.
+
+    Parameters:
+    x_range (tuple): A tuple (start, end) defining the range of x values.
+    slope (float): The slope of the linear function.
+    intercept (float): The intercept of the linear function.
+    num_points (int): The number of points to generate.
+    noise_std_dev (float): The standard deviation of the Gaussian noise.
+
+    Returns:
+    x (np.array): The x values.
+    y (np.array): The y values with noise.
+    """
+    # Generate x values
+    x = np.linspace(x_range[0], x_range[1], num_points)
+
+    # Generate y values for the linear function
+    y = slope * x + intercept
+
+    # Add Gaussian noise to the y values
+    noise = np.random.normal(0, noise_std_dev, num_points)
+    y_noisy = y + noise
+
+    return x, y_noisy
+
 
 def plot_functions(f, g, x_range, f_name='func1', g_name='func2', filename=None, show_plot = True):
     """
@@ -58,10 +78,17 @@ def plot_functions(f, g, x_range, f_name='func1', g_name='func2', filename=None,
         plt.show()
 
 
-x_range = (-5, 5)
-activations = [(relu, relu_prime, 'relu'), (tanh, tanh_prime, 'tanh'), (sigmoid, sigmoid_prime, 'sigmoid')]
-for f, f_prime, f_name in activations:
-    plot_functions(f, f_prime, x_range, f_name,
-                   f'{f_name}_prime',
-                   filename=f'{f_name} and {f_name}_prime.png',
-                   show_plot=False)
+def min_max_normalize(arr):
+    """
+    Min-max normalizes a numpy array.
+
+    Parameters:
+    arr (np.array): The input numpy array.
+
+    Returns:
+    normalized_arr (np.array): The min-max normalized numpy array.
+    """
+    min_val = np.min(arr)
+    max_val = np.max(arr)
+    normalized_arr = (arr - min_val) / (max_val - min_val)
+    return normalized_arr
